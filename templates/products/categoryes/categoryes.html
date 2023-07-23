@@ -1,0 +1,24 @@
+{% extends 'layouts/main.html' %}
+
+
+{% block content %}
+
+    <style type='text/css'>
+        .categoryes {
+            display: flex;
+            justify-content: space-between;
+            width: 70%;
+            margin-left: 15%;
+            padding: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+
+    <div class="categoryes">
+        {% for category in categoryes %}
+            <a href="/posts">
+                <h4>{{ category.name }}</h4>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}
