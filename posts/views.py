@@ -1,6 +1,9 @@
+from django.db.models import Q
 from django.shortcuts import render, redirect
+
 from .models import Product, Category, Review
 from posts.forms import ProductCreateForm, CategoryCreateForm, ReviewCreateForm
+from posts.constans import PAGINATION_LIMIT
 
 
 def main_view(request):
@@ -12,8 +15,26 @@ def products_view(request):
     if request.method == 'GET':
         products = Product.objects.all()
 
+        max_page = products.__len__() / PAGINATION_LIMIT
+        if round(max_page) < max_page:
+            max_page = round(max_page) + 1
+        else:
+            max_page = round(max_page)
+
+        search_text = request.GET.get('search')
+        page = int(request.GET.get('page', 1))
+
+        if search_text:
+            products = products.filter(Q(name__icontains=search_text) |
+                                       Q(description__icontains=search_text))
+
+        """ Pagination """
+        products = products[PAGINATION_LIMIT * (page - 1):PAGINATION_LIMIT * page]
+
         context_data = {
-            'products': products
+            'products': products,
+            'user': request.user,
+            'pages': range(1, max_page + 1)
         }
         return render(request, 'products/products.html', context=context_data)
 
@@ -71,7 +92,7 @@ def category_create_view(request):
             'form': CategoryCreateForm
         }
 
-        return render(request, 'products/categoryes.html', context=context_data)
+        return render(request, 'products/categoryes/categoryes.html', context=context_data)
 
     if request.method == 'POST':
         data, files = request.POST, request.FILES

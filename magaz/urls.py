@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 
 from magaz import settings
 from posts import views
+from users import views as users_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,7 +34,11 @@ urlpatterns = [
     path('categoryes/', views.categoryes_view),
     path('categoryes/create/', views.category_create_view),
 
-    path('review/create/', views.review_create_view)
+    path('review/create/', views.review_create_view),
+
+    path('users/register/', users_views.register_view),
+    path('users/login/', users_views.login_view),
+    path('users/logout/', users_views.logout_view),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
